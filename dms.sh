@@ -5,17 +5,16 @@ const _ = require("lodash");
 
 //Constants
 const SETUP_BIN = "~/setups/imtf/apps/bin";
-const INSTALL_BIN =
-    "~/projects/rbs/distribution/target/distribution-1.0.0-SNAPSHOT/bash-install";
 
 //Main
-const args = process.argv.slice(2, 4);
+const args = process.argv.slice(2, 5);
 const option = args[0];
-//const version = args[1]??"1.0.0-SNAPSHOT";
-//const INSTALL_BIN =
-//  `~/projects/rbs/distribution/target/distribution-${version}/bash-install`;
+const isEcho = option === "install" ? args[2] : args[1];
+const version = option === "install" ? args[1] : null;
+const INSTALL_BIN =
+ `~/projects/rbs/distribution/target/distribution-${version}/bash-install`;
 const cmd = option === "install" ? getInstallCmd() : getExecuteCmd(option);
-_.isEmpty(args) ? execute() : execute(cmd, option, args[1]);
+_.isEmpty(args) ? execute() : execute(cmd, option, isEcho);
 
 
 //Helpers
@@ -31,10 +30,9 @@ function getExecuteCmd(option = "status") {
 //Core
 function execute(
   cmd = getExecuteCmd(),
-  option = "status",
-  executeArg = "execute"
+  isEcho = false
 ) {
-  (executeArg === "execute")?sh.exec(cmd):sh.echo(cmd);
+  isEcho?sh.exec(cmd):sh.echo(cmd);
 }
 
 function getCmd(path, bin, option) {
